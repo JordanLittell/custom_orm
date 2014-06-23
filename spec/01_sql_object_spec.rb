@@ -5,12 +5,15 @@ describe SQLObject do
   before(:each) { DBConnection.reset }
   after(:each) { DBConnection.reset }
 
-  before(:all) do
+  before(:each) do
     class Cat < SQLObject
+      self.finalize!
     end
 
     class Human < SQLObject
       self.table_name = 'humans'
+
+      self.finalize!
     end
   end
 
@@ -30,7 +33,6 @@ describe SQLObject do
     end
 
     it '::columns creates getter methods for each column' do
-      Cat.columns
       c = Cat.new
       expect(c.respond_to? :something).to be false
       expect(c.respond_to? :name).to be true
@@ -39,7 +41,6 @@ describe SQLObject do
     end
 
     it '::columns creates setter methods for each column' do
-      Cat.columns
       c = Cat.new
       c.name = "Nick Diaz"
       c.id = 209
@@ -50,7 +51,6 @@ describe SQLObject do
     end
 
     it '::columns created setter methods use attributes hash to store data' do
-      Cat.columns
       c = Cat.new
       c.name = "Nick Diaz"
       expect(c.instance_variables).to eq [:@attributes]

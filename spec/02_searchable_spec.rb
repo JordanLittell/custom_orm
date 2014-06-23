@@ -6,10 +6,13 @@ describe 'Searchable' do
 
   before(:all) do
     class Cat < SQLObject
+      finalize!
     end
 
     class Human < SQLObject
       self.table_name = 'humans'
+
+      finalize!
     end
   end
 

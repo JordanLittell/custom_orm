@@ -7,16 +7,23 @@ describe 'Associatable' do
   before(:all) do
     class Cat < SQLObject
       belongs_to :human, foreign_key: :owner_id
+
+      finalize!
     end
 
     class Human < SQLObject
       self.table_name = 'humans'
+
       has_many :cats, foreign_key: :owner_id
       belongs_to :house
+
+      finalize!
     end
 
     class House < SQLObject
       has_many :humans
+
+      finalize!
     end
   end
 
@@ -51,6 +58,8 @@ describe 'Associatable' do
     before(:all) do
       class Cat
         has_one_through :home, :human, :house
+
+        self.finalize!
       end
     end
 

@@ -8,6 +8,9 @@ class SQLObject
     # ...
   end
 
+  def self.finalize!
+  end
+
   def self.table_name=(table_name)
     # ...
   end
@@ -19,7 +22,7 @@ class SQLObject
   def self.all
     # ...
   end
-  
+
   def self.parse_all(results)
     # ...
   end
