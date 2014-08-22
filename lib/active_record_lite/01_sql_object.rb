@@ -1,9 +1,11 @@
 require_relative 'db_connection'
+
 require 'active_support/inflector'
 #NB: the attr_accessor we wrote in phase 0 is NOT used in the rest
 #    of this project. It was only a warm up.
 
 class SQLObject
+
   def self.columns
     prepare = "SELECT
     *
@@ -81,7 +83,8 @@ class SQLObject
     VALUES
           (#{q_marks})
     SQL
-  
+    
+    self.id = DBConnection.last_insert_row_id
   end
 
   def initialize(params={})
@@ -95,11 +98,26 @@ class SQLObject
   end
 
   def save
-    # ...
+    if self.attributes[:id].nil?
+      insert 
+    else 
+      update
+    end
   end
 
   def update
-    # ...
+    col_names = @attributes.keys
+    search_criteria= col_names.map{ |name| "#{name.to_s} = ?"}.join(",")
+    result = DBConnection.execute(<<-SQL, *attribute_values, self.attributes[:id])
+    UPDATE 
+          #{self.class.table_name} 
+    SET
+          #{search_criteria}
+    WHERE 
+        id = ?
+    SQL
+
+    
   end
 
   def attribute_values
