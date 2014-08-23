@@ -18,5 +18,7 @@ module Searchable
 end
 
 class SQLObject
+  #when we include a module, the methods are available to us through class methods, 
+  #in this instance we want instance methods so we use extend
   extend Searchable
 end
