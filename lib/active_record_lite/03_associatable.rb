@@ -52,22 +52,23 @@ end
 
 module Associatable
   # Phase IVb
-  # .
+
   def belongs_to(name, options = {})
     options = BelongsToOptions.new(name,options)
     
     define_method "#{name}" do 
       #get the target class (done) 
       #pull data out from row w/ primary key that matches foreign_key
-      options.model_class.where(
-        { :id => self.send(options.foreign_key.to_s) }
-      ).first
+      options.model_class.where({ :id => self.send(options.foreign_key.to_s) }).first
     end
 
   end
 
   def has_many(name, options = {})
-    # ...
+    options = HasManyOptions.new(name, self.inspect.constantize, options)
+      define_method "#{name}" do 
+        options.model_class.where({ options.foreign_key => self.send(options.primary_key) })
+      end
   end
 
   def assoc_options
