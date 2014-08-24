@@ -5,7 +5,10 @@ module Searchable
   def where(params)
     where_clause = params.keys.map{ |key| "#{key} = ?" }.join(" AND ")
     attribute_values = params.values
+
+    p "WHERE CLAUSE IS AS FOLLOWS:SELECT * FROM #{self.table_name} WHERE #{where_clause} #{attribute_values}"
     result = DBConnection.execute(<<-SQL, *attribute_values)
+    
     SELECT
           *
     FROM 

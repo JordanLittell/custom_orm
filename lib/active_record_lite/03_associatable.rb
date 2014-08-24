@@ -55,8 +55,15 @@ module Associatable
   # .
   def belongs_to(name, options = {})
     options = BelongsToOptions.new(name,options)
-    define_method "#{options.send(name.to_sym)}" do 
+    
+    define_method "#{name}" do 
+      #get the target class (done) 
+      #pull data out from row w/ primary key that matches foreign_key
+      options.model_class.where(
+        { :id => self.send(options.foreign_key.to_s) }
+      ).first
     end
+
   end
 
   def has_many(name, options = {})
