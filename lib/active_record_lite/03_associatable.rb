@@ -40,13 +40,13 @@ class HasManyOptions < AssocOptions
     @foreign_key = "#{self_class_name.to_s.downcase}_id".to_sym
     @primary_key = :id
     @class_name = "#{name.to_s.singularize.camelcase}"
-  
+    
     options.each do |key, value|
       next if key.nil? || value.nil? 
       instance_variable_set("@#{key.to_s}", value)
       instance_variable_get("@#{key.to_s}")
     end
-    p "the options are #{@class_name} and #{options[:class_name]}"
+    
   end
 end
 
@@ -55,7 +55,7 @@ module Associatable
 
   def belongs_to(name, options = {})
     options = BelongsToOptions.new(name,options)
-    
+    self.assoc_options[name.to_sym] = options
     define_method "#{name}" do 
       #get the target class (done) 
       #pull data out from row w/ primary key that matches foreign_key
@@ -65,14 +65,16 @@ module Associatable
   end
 
   def has_many(name, options = {})
+
     options = HasManyOptions.new(name, self.inspect.constantize, options)
-      define_method "#{name}" do 
-        options.model_class.where({ options.foreign_key => self.send(options.primary_key) })
-      end
+    define_method "#{name}" do 
+      options.model_class.where({ options.foreign_key => self.send(options.primary_key) })
+    end
+  
   end
 
   def assoc_options
-    # Wait to implement this in Phase V. Modify `belongs_to`, too.
+    @assoc_params ||= {}
   end
 end
 
